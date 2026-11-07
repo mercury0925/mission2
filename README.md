@@ -110,3 +110,4 @@ mission2/
 | 퀴즈 추가 후 파일 저장 확인 | [12-add-quiz-saved](docs/screenshots/12-add-quiz-saved.png) |
 | 목록 · 리팩터링 커밋 | [13](docs/screenshots/13-commit-list.png) · [15](docs/screenshots/15-refactor-push.png) |
 | clone · pull 실습 | [19-clone](docs/screenshots/19-clone.png) · [20-pull](docs/screenshots/20-pull.png) |
+> clone 실습: 별도 디렉터리(mission2-clone)에서 수정 후 push
