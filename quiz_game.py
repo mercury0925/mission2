@@ -141,6 +141,19 @@ class QuizGame:
         print(f"🏆 결과: {total}문제 중 {correct}문제 정답! ({score}점)")
         print("=" * 40)
 
+    def add_quiz(self):
+        """문제, 선택지 4개, 정답 번호를 입력받아 퀴즈를 추가하고 저장한다."""
+        print("\n📌 새로운 퀴즈를 추가합니다.\n")
+        question = self.input_text("문제를 입력하세요: ")
+        choices = [self.input_text(f"선택지 {i}: ") for i in range(1, Quiz.CHOICE_COUNT + 1)]
+        answer = self.input_number(f"정답 번호 (1-{Quiz.CHOICE_COUNT}): ", 1, Quiz.CHOICE_COUNT)
+
+        self.quizzes.append(Quiz(question, choices, answer))
+        if self.save():
+            print("\n✅ 퀴즈가 추가되었습니다!")
+        else:
+            print("\n⚠️ 퀴즈는 추가됐지만 파일에 저장하지 못했습니다.")
+
     # ---------- 실행 ----------
     def run(self):
         try:
@@ -151,6 +164,8 @@ class QuizGame:
                 choice = self.input_number("선택: ", 1, len(self.MENU_ITEMS))
                 if choice == 1:
                     self.play()
+                elif choice == 2:
+                    self.add_quiz()
                 elif choice == 5:
                     self.save()
                     print("\n👋 게임을 종료합니다. 데이터가 저장되었습니다.")
