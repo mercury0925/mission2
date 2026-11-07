@@ -139,10 +139,7 @@ class QuizGame:
         score = round(correct / total * 100)
         print("=" * 40)
         print(f"🏆 결과: {total}문제 중 {correct}문제 정답! ({score}점)")
-        print("=" * 40)
-
-        print(f"🏆 결과: {total}문제 중 {correct}문제 정답! ({score}점)")
-        self.update_best_score(score)   # ← 추가
+        self.update_best_score(score)
         print("=" * 40)
 
     def add_quiz(self):
@@ -185,6 +182,7 @@ class QuizGame:
 
     # ---------- 실행 ----------
     def run(self):
+        """데이터를 불러오고 메뉴 루프를 실행한다."""
         try:
             self.load()
             while True:
@@ -199,13 +197,10 @@ class QuizGame:
                     self.list_quizzes()
                 elif choice == 4:
                     self.show_score()
-                elif choice == 5:
+                else:
                     self.save()
                     print("\n👋 게임을 종료합니다. 데이터가 저장되었습니다.")
                     break
-                else:
-                    print("\n🚧 준비 중인 기능입니다.")
-                print("\n🚧 준비 중인 기능입니다.")
         except (KeyboardInterrupt, EOFError):
             print("\n\n⚠️ 입력이 중단되었습니다. 데이터를 저장하고 종료합니다.")
             self.save()
