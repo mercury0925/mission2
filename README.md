@@ -52,6 +52,13 @@ mission2/
 | `Quiz` | `question`, `choices`, `answer` | `display` 출력, `is_correct` 정답 확인, `to_dict` / `from_dict` JSON 변환 및 형식 검증 |
 | `QuizGame` | `quizzes`, `best_score`, `state_file` | `show_menu`, `play`, `add_quiz`, `list_quizzes`, `show_score`, `update_best_score`, `load` / `save`, `input_number` / `input_text` |
 
+**클래스로 나눈 이유**
+
+- **데이터와 동작을 묶기 위해**: 퀴즈 하나의 문제·선택지·정답과 이를 다루는 동작(출력, 정답 확인)을 `Quiz`에 묶어, 함수와 dict만 쓸 때처럼 `quiz["answer"]` 같은 접근이 코드 곳곳에 흩어지지 않게 했습니다.
+- **역할 분리**: `Quiz`는 "퀴즈 한 개", `QuizGame`은 "게임 전체(목록, 점수, 메뉴, 저장)"만 책임지므로, 저장 방식을 바꿔도 `Quiz`는 수정할 필요가 없습니다.
+- **상태 공유**: 퀴즈 목록과 최고 점수를 `self`의 속성으로 두어, 모든 메서드가 전역 변수나 매개변수 전달 없이 같은 상태를 사용합니다.
+- **한계**: 이 정도 규모에서는 함수만으로도 구현할 수 있어 코드가 다소 길어지지만, 기능이 늘어날수록(힌트, 삭제, 기록 등) 수정 범위를 줄일 수 있습니다.
+
 ## 데이터 파일 (state.json)
 
 - **경로**: 프로젝트 루트 `state.json` (UTF-8)
@@ -80,6 +87,16 @@ mission2/
 }
 ```
 
+**JSON을 사용한 이유와 한계**
+
+| 구분 | 내용 |
+|---|---|
+| 장점 | 사람이 바로 읽고 수정할 수 있는 텍스트 형식이며, Python의 `list`/`dict`와 구조가 그대로 대응해 표준 라이브러리 `json`만으로 저장·복원이 가능 |
+| 한계 | 일부만 수정해도 파일 전체를 다시 쓰고, 읽을 때도 전체를 메모리에 올림. 데이터가 커지면 느려지고, 여러 프로그램이 동시에 쓰면 충돌할 수 있음 |
+| 대안 | 데이터가 많아지면 SQLite(`sqlite3`, 표준 라이브러리)처럼 필요한 행만 읽고 쓰는 DB나, 한 줄에 레코드 하나씩 추가하는 JSON Lines 형식을 고려 |
+
+퀴즈 수십 개 수준에서는 JSON으로 충분하다고 판단했고, 쓰는 도중 중단될 위험은 임시 파일 저장 후 교체하는 방식으로 보완했습니다.
+
 ## 실행 화면
 
 | 퀴즈 풀기 | 퀴즈 추가 |
@@ -97,6 +114,37 @@ mission2/
 ## 개발 과정 및 Git 기록
 
 기능 단위로 커밋했고, 퀴즈 풀기는 `feature/play` 브랜치에서 구현한 뒤 `--no-ff`로 병합했습니다. 개발이 끝난 뒤 별도 디렉터리에 clone해서 README를 수정·push하고, 원래 디렉터리에서 pull로 반영된 것을 확인했습니다.
+
+**커밋 메시지 규칙**: `타입: 변경 요약` 형식으로, 한 커밋에는 기능 하나만 담았습니다.
+
+| 타입 | 용도 |
+|---|---|
+| `Feat` | 새 기능 추가 |
+| `Fix` | 버그 수정 |
+| `Refactor` | 동작 변경 없는 코드 구조 정리 |
+| `Docs` | README, 스크린샷 등 문서 |
+| `Chore` | 초기 설정 등 기타 작업 |
+
+**커밋 로그** (`git log --oneline --graph`, 총 14개)
+
+```
+* 2686625 Docs: Git 실습 스크린샷 추가
+* 4de390a Docs: README에 clone 실습 기록 추가
+* 2605d09 Docs: README 작성 및 실행 화면 추가
+* 2de5fa0 Refactor: 미사용 분기 제거 및 메뉴 처리 정리
+* f120c57 Feat: 최고 점수 확인 및 갱신 기능 구현
+* 590b76e Feat: 퀴즈 목록 기능 구현
+* 1310a4f Feat: 퀴즈 추가 기능 구현
+*   7492490 Merge: feature/play 브랜치 병합
+|\
+| * 5608177 Feat: 퀴즈 풀기 기능 구현
+|/
+* caa0eb1 Feat: state.json 저장/불러오기 및 손상 파일 복구
+* 49d404e Feat: 메뉴 출력 및 입력 검증 구현
+* 07ac030 Feat: 머신러닝 기초 기본 퀴즈 5개 추가
+* d19af07 Feat: Quiz 클래스 구현 (출력, 정답 확인, dict 변환)
+* d78d715 Chore: 프로젝트 초기 설정 (.gitignore, README)
+```
 
 ![git log](docs/screenshots/21-git-log.png)
 
