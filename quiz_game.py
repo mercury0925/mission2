@@ -115,6 +115,32 @@ class QuizGame:
             print(f"{i}. {item}")
         print(line)
 
+    # ---------- 기능 ----------
+    def play(self):
+        """저장된 퀴즈를 순서대로 출제하고 결과를 보여준다."""
+        if not self.quizzes:
+            print("\n📭 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가하세요.")
+            return
+
+        total = len(self.quizzes)
+        correct = 0
+        print(f"\n📝 퀴즈를 시작합니다! (총 {total}문제)\n")
+
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print("-" * 40)
+            quiz.display(number)
+            answer = self.input_number("정답 입력: ", 1, Quiz.CHOICE_COUNT)
+            if quiz.is_correct(answer):
+                print("✅ 정답입니다!\n")
+                correct += 1
+            else:
+                print(f"❌ 오답입니다. 정답은 {quiz.answer}번입니다.\n")
+
+        score = round(correct / total * 100)
+        print("=" * 40)
+        print(f"🏆 결과: {total}문제 중 {correct}문제 정답! ({score}점)")
+        print("=" * 40)
+
     # ---------- 실행 ----------
     def run(self):
         try:
@@ -123,10 +149,14 @@ class QuizGame:
                 print()
                 self.show_menu()
                 choice = self.input_number("선택: ", 1, len(self.MENU_ITEMS))
-                if choice == 5:
+                if choice == 1:
+                    self.play()
+                elif choice == 5:
                     self.save()
                     print("\n👋 게임을 종료합니다. 데이터가 저장되었습니다.")
                     break
+                else:
+                    print("\n🚧 준비 중인 기능입니다.")
                 print("\n🚧 준비 중인 기능입니다.")
         except (KeyboardInterrupt, EOFError):
             print("\n\n⚠️ 입력이 중단되었습니다. 데이터를 저장하고 종료합니다.")
